@@ -1,0 +1,42 @@
+  services:
+  pss-fe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pss-fe-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - DATABASE_URL=postgresql://pc:pc@db:5432/planarshare
+      - PUBLIC_FILE_SERVICE_URL=https://fs.planarshare.com
+      - GOOGLE_CLIENT_ID=177408081140-o0map12ip3bfgfnd7nu26lvhn820gn84.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+      - POLAR_ACCESS_TOKEN=polar_oat_4QPdb9w7oylgSUfH7mQ8pJ7pp6D1GvVNDedhp4OzjmF
+      - POLAR_WEBHOOK_SECRET=5203b916a65340379064bfc2938abeda
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pss-fe.rule=Host(`planarshare.com`)"
+      - "traefik.http.routers.pss-fe.entrypoints=web,websecure"
+      - "traefik.http.routers.pss-fe.tls.certresolver=myresolver"
+    networks:
+      - default
+
+  db:
+    external: true
+    name: postgres-db
+
+networks:
+  default:
+    external: true
+    name: default

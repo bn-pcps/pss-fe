@@ -1,0 +1,19 @@
+{
+	"apps": [
+		{
+			"name": "pss-fe",
+			"script": "build/index.js",
+			"cwd": "/home/miaw/pc-deploy/pss-fe",
+			"env": {
+				"NODE_ENV": "production",
+				"PORT": 3000
+			},
+			"instances": "max",
+			"exec_mode": "cluster",
+			"max_memory_restart": "500M",
+			"error_file": "/var/log/pm2/pss-fe-error.log",
+			"out_file": "/var/log/pm2/pss-fe-out.log",
+			"log_file": "/var/log/pm2/pss-fe.log"
+		}
+	]
+}
